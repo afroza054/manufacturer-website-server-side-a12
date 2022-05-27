@@ -44,7 +44,6 @@ app.post('/login', async(req,res)=>{
         const items = await cursor.toArray();
         res.send(items);
       });
-      
       // Post item Data
       app.post("/item", async (req, res) => {
         const newUser = req.body;
@@ -53,7 +52,14 @@ app.post('/login', async(req,res)=>{
         res.send(result);
       });
   
-//
+      //Delete a item data
+      app.delete("/item/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        console.log(id, query);
+        const result = await itemCollection.deleteOne(query);
+        res.send(result);
+      });
   
       //Get Item by id
       app.get("/item/:id", async (req, res) => {
