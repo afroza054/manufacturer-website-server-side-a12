@@ -44,7 +44,25 @@ app.post('/login', async(req,res)=>{
         const items = await cursor.toArray();
         res.send(items);
       });
-      //
+      
+      // Post item Data
+      app.post("/item", async (req, res) => {
+        const newUser = req.body;
+        console.log("adding new user", newUser);
+        const result = await itemCollection.insertOne(newUser);
+        res.send(result);
+      });
+  
+//
+  
+      //Get Item by id
+      app.get("/item/:id", async (req, res) => {
+        const id = req.params.id;
+        // console.log(id);
+        const query = { _id: ObjectId(id) };
+        const product = await itemCollection.findOne(query);
+        res.send(product);
+      });
 
       //Update item Quantity
       app.put("/item/:id", async (req, res) => {
