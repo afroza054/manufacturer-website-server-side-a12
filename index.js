@@ -33,9 +33,15 @@ app.post('/login', async(req,res)=>{
   });
   res.send({accessToken});
   })
+  //get item
+  app.get("/item", async (req, res) => {
+    const query = {};
+    const cursor = itemCollection.find(query);
+    const items = await cursor.toArray();
+    res.send(items);
+  });
   }
 }
-
 app.listen(port, () => {
   console.log(`Manufacture app listening on port ${port}`)
 })
