@@ -10,7 +10,6 @@ const app = express()
 const port = process.env.PORT || 5000
 app.use(cors());
 app.use(express.json());
-
 function verifyJWT(req, res, next) {
   const authHeader= req.headers.authorization;
 if(!authHeader){
@@ -26,10 +25,19 @@ req.decoded=decoded;
 next();
 })
   // console.log('inside Jwt',authHeader);
+
+
 }
+//https://murmuring-eyrie-20180.herokuapp.com/
 app.get('/', (req, res) => {
-  res.send('Manufacturing Website')
-})
+  res.send('Look MA!')
+});
+//Mongodb
+/* MONGODB_USER
+user:afroza054
+password: jhhOz7ocMitolhP5
+jhhOz7ocMitolhP5 */
+
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.50o6t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -132,6 +140,7 @@ app.post('/login', async(req,res)=>{
   app.get("/", (req, res) => {
     res.send("Srever is running......!");
   });
+
 
 app.listen(port, () => {
   console.log(`Manufacture app listening on port ${port}`)
