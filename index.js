@@ -16,6 +16,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Manufacturing Website')
 })
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.50o6t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 async function run() {
@@ -33,15 +34,67 @@ app.post('/login', async(req,res)=>{
   });
   res.send({accessToken});
   })
-  //get item
-  app.get("/item", async (req, res) => {
-    const query = {};
+  
+  
+  
+      //get item
+      app.get("/item", async (req, res) => {
+        const query = {};
+        const cursor = itemCollection.find(query);
+        const items = await cursor.toArray();
+        res.send(items);
+      });
+      //
+
+      //Update item Quantity
+      app.put("/item/:id", async (req, res) => {
+        const id = req.params.id;
+        // console.log(id);
+        const updatedItem = req.body;
+        console.log(updatedItem);
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updatedDoc = {
+          $set: {
+            quantity: updatedItem.quantity,
+          },
+        };
+        const result = await itemCollection.updateOne(
+          filter,
+          updatedDoc,
+          options
+        );
+        res.send(result);
+      });
+  
+      //Get api data by email 
+      app.get("/useritem", verifyJWT, async (req, res) => {
+        const decodedEmail = req.decoded.email;
+        const email = req.query.email;
+        // console.log(email);
+  if(email===decodedEmail){
+    const query = { email: email };
     const cursor = itemCollection.find(query);
-    const items = await cursor.toArray();
-    res.send(items);
-  });
+    const useritems = await cursor.toArray();
+    res.send(useritems);
   }
-}
+  else{
+    res.status(403).send({message : 'forbidden access'})
+  }
+  
+      });
+  
+    } finally {
+      // await client.close();
+    }
+  }
+  //Exicute funtion
+  run().catch(console.dir);
+  //Server Running ok
+  app.get("/", (req, res) => {
+    res.send("Srever is running......!");
+  });
+
 app.listen(port, () => {
   console.log(`Manufacture app listening on port ${port}`)
 })
