@@ -112,6 +112,14 @@ app.post('/login', async(req,res)=>{
         );
         res.send(result);
       });
+      app.get("/reviews", async (req, res) => {
+        const query = {};
+        // console.log('query', query);
+        const cursor = reviewsCollection.find(query);
+        const reviews = await cursor.toArray();
+        // console.log('reviews', reviews);
+        res.send(reviews);
+      });
   
       //Get api data by email 
       app.get("/useritem", verifyJWT, async (req, res) => {
